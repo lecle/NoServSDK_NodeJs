@@ -23,6 +23,7 @@
   "homepage": "https://github.com/lecle/NoServSDK_NodeJs",
   "dependencies": {
     "assert": "^1.3.0",
+    "istanbul": "^0.3.5",
     "request": "^2.53.0"
   }
 }
