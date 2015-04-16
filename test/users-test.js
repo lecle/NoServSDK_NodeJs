@@ -2,7 +2,7 @@ var assert = require('assert');
 var Noserv = require('../').Noserv;
 var NoservInit = require('../').NoservInit;
 
-var sessionToken = 'KukF8nmhhfW3MyAK';
+var sessionToken = '';
 var appId = 'QuTvoTiPhHVIhOIfNZbc6NAk9NwfIUeB';
 var appKey = '1olHlLDo4JQEIqasKDw25DdKPnxJ40kV';
 
