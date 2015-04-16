@@ -83,4 +83,29 @@ describe('classes', function() {
         });
     });
 
+    describe('create acl', function () {
+        it('should create acl without error', function (done) {
+
+            var score = new Noserv.ObjectACL("Score", 'KukF8nmhhfW3MyAK');
+
+            score.setReadAccess('test', true);
+            score.setWriteAccess('test', false);
+            score.setMasterAccess('test', true);
+
+            score.setPublicReadAccess(true);
+            score.setPublicWriteAccess(true);
+
+            score.save({
+                success: function (data) {
+
+                    done();
+                },
+                error: function (data, error) {
+
+                    done(error);
+                }
+            });
+        });
+    });
+
 });
