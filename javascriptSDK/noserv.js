@@ -158,7 +158,7 @@ var testGetAppKey = function(appId){
 // 2. Core-1 SuperType, SubType
 
 var SuperType = function(className, sessionToken, appId, appKey, masterKey) {
-    this._serverUrl = "http://api.noserv.io"
+    this._serverUrl = "http://localhost:8077"
     this._className = className;
     this._sessionToken =  sessionToken;
     this._appId = appId;
@@ -188,7 +188,7 @@ var SuperType = function(className, sessionToken, appId, appKey, masterKey) {
 }
 
 SuperType.localStorage = {};
-SuperType.serverUrl = "http://api.noserv.io";
+SuperType.serverUrl = "http://localhost:8077";
 
 SuperType.prototype.getClassName = function(){
     console.log(this._className);
@@ -803,8 +803,12 @@ SuperType.Query.prototype = {
         return this;
     },
 
-    toJSON: function() {
+    toJSON: function(type) {
         var whereData = JSON.stringify(this._where);
+
+        if(type === 'where')
+            return whereData;
+
         var params = {
             where: whereData
         };
@@ -948,12 +952,22 @@ SuperType.Query.prototype = {
         this._addCondition(key, "$exists", false);
         return this;
     },
+    matches: function(key, regex, modifiers) {
+        this._addCondition(key, "$regex", regex);
+        if (!modifiers) { modifiers = ""; }
+        if (regex.ignoreCase) { modifiers += 'i'; }
+        if (regex.multiline) { modifiers += 'm'; }
 
+        if (modifiers && modifiers.length) {
+            this._addCondition(key, "$options", modifiers);
+        }
+        return this;
+    },
     _orQuery: function(arrs) {
         //for("arr만큼돌면서 스트링 더하기")
 
         var queryJSON = collect(arrs, function(q) {
-            return q.toJSON();
+            return q.toJSON('where');
         });
 
         this._where.$or = queryJSON;
@@ -1421,6 +1435,7 @@ var mimeTypes = {
 // File Class End
 // ======================================================
 
+// cloud function
 SuperType.Cloud = {};
 SuperType.Cloud.run = function(functionName, param, callF) {
 
@@ -1461,6 +1476,71 @@ SuperType.Cloud.run = function(functionName, param, callF) {
 
         return request;
     }
+};
+
+// acl
+// 임시 API입니다.
+SuperType.ObjectACL = function(className, sessionToken) {
+
+    this.ACL = {};
+    this.className = className;
+    this.sessionToken = sessionToken;
+
+    this.setReadAccess = function(userId, isAllow) {
+
+        if(!this.ACL[userId])
+            this.ACL[userId] = {};
+
+        this.ACL[userId].read = isAllow;
+    };
+
+    this.setWriteAccess = function(userId, isAllow) {
+
+        if(!this.ACL[userId])
+            this.ACL[userId] = {};
+
+        this.ACL[userId].write = isAllow;
+    };
+
+    this.setMasterAccess = function(userId, isAllow) {
+
+        if(!this.ACL[userId])
+            this.ACL[userId] = {};
+
+        this.ACL[userId].master = isAllow;
+    };
+
+    this.setPublicReadAccess = function(isAllow) {
+
+        this.setReadAccess('*', isAllow);
+    };
+
+    this.setPublicWriteAccess = function(isAllow) {
+
+        this.setWriteAccess('*', isAllow);
+    };
+
+    this.save = function(callF) {
+
+        var request =  SuperType._request({
+            route: "classes",
+            className: this.className,
+            objectId: 'ACL',
+            method: "POST",
+            useMasterKey: false,
+            data: JSON.stringify({ACL : this.ACL, _sessionToken : this.sessionToken})
+        }, {
+
+            success : function(data) {
+
+                callF.success(data);
+            },
+            error : function(data, message) {
+
+                callF.error(data, message);
+            }
+        });
+    };
 };
 
 //  Class
