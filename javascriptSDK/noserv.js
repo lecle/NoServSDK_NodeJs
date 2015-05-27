@@ -427,7 +427,7 @@ SuperType._request = function(options, callF, addF) {
 
     delete dataObject._appId;
     delete dataObject._appKey;
-    delete dataObject._appKey;
+    delete dataObject._masterKey;
     delete dataObject._sessionToken;
     delete dataObject._serverUrl;
     delete dataObject._className;
@@ -783,6 +783,9 @@ SuperType.Query.prototype = {
 
         var params = JSON.parse(this.toJSON());
         params.limit = 1;
+
+        if(options.useMasterKey && this._masterKey)
+            params._masterKey = this._masterKey;
 
         var request = SuperType._request({
             route: route,
@@ -1541,6 +1544,52 @@ SuperType.ObjectACL = function(className, sessionToken) {
             }
         });
     };
+};
+
+// aggregate
+SuperType.Aggregate = function(obj){
+
+    this.objectClass = obj;
+    this.className = obj._className;
+
+    this._aggregate = [];
+};
+
+SuperType.Aggregate.prototype = {
+
+    push : function(pipeline) {
+
+        this._aggregate.push(pipeline);
+    },
+
+    toJSON: function(type) {
+
+        var params = {
+            aggregate: this._aggregate
+        };
+
+        return JSON.stringify(params);
+    },
+
+    aggregate: function(options) {
+        options = options || {};
+        var route = "classes";
+
+        if(this.className == 'User'){
+            route = "users";
+            this.className = null;
+        }
+
+        var request = SuperType._request({
+            route: route,
+            className: this.className,
+            method: "GET",
+            useMasterKey: options.useMasterKey,
+            data: this.toJSON()
+        },options);
+
+        return request
+    }
 };
 
 //  Class
