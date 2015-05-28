@@ -158,7 +158,7 @@ var testGetAppKey = function(appId){
 // 2. Core-1 SuperType, SubType
 
 var SuperType = function(className, sessionToken, appId, appKey, masterKey) {
-    this._serverUrl = "http://localhost:8077"
+    this._serverUrl = "http://api.noserv.io"
     this._className = className;
     this._sessionToken =  sessionToken;
     this._appId = appId;
@@ -188,7 +188,7 @@ var SuperType = function(className, sessionToken, appId, appKey, masterKey) {
 }
 
 SuperType.localStorage = {};
-SuperType.serverUrl = "http://localhost:8077";
+SuperType.serverUrl = "http://api.noserv.io";
 
 SuperType.prototype.getClassName = function(){
     console.log(this._className);
@@ -1462,7 +1462,7 @@ SuperType.Cloud.run = function(functionName, param, callF) {
         var request =  SuperType._request({
             route: "functions",
             objectId : functionName,
-            method: "GET",
+            method: "POST",
             useMasterKey: false,
             data: JSON.stringify(param)
         }, {
