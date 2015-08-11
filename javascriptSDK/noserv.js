@@ -158,7 +158,7 @@ var testGetAppKey = function(appId){
 // 2. Core-1 SuperType, SubType
 
 var SuperType = function(className, sessionToken, appId, appKey, masterKey) {
-    this._serverUrl = "http://api.noserv.io"
+    this._serverUrl = "http://api.noserv.io";
     this._className = className;
     this._sessionToken =  sessionToken;
     this._appId = appId;
@@ -1551,6 +1551,7 @@ SuperType.Aggregate = function(obj){
 
     this.objectClass = obj;
     this.className = obj._className;
+    this.masterKey = obj.masterKey;
 
     this._aggregate = [];
 };
@@ -1565,7 +1566,8 @@ SuperType.Aggregate.prototype = {
     toJSON: function(type) {
 
         var params = {
-            aggregate: this._aggregate
+            aggregate: this._aggregate,
+            _masterKey : this.masterKey
         };
 
         return JSON.stringify(params);
