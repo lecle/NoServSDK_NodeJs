@@ -4,9 +4,9 @@
   "description": "noserv.io sdk",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --recursive",
-    "test-cov": "istanbul cover node_modules/mocha/bin/_mocha -- --reporter dot test/",
-    "test-travis": "istanbul cover node_modules/mocha/bin/_mocha --report lcovonly -- --reporter spec test/"
+    "test": "mocha --recursive  --timeout 10000",
+    "test-cov": "istanbul cover node_modules/mocha/bin/_mocha -- --timeout 10000 --reporter dot test/",
+    "test-travis": "istanbul cover node_modules/mocha/bin/_mocha  --report lcovonly -- --timeout 10000 --reporter spec test/"
   },
   "repository": {
     "type": "git",
