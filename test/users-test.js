@@ -70,6 +70,8 @@ describe('users', function() {
                     user.set('objectId', data.objectId);
                     user.set('_sessionToken', data.sessionToken);
 
+                    sessionToken = data.sessionToken;
+
                     done();
                 },
                 error: function(user, error) {
