@@ -731,6 +731,11 @@ SuperType.Query = function(obj){
     this.objectClass = obj;
     this.className = obj._className;
 
+    this._sessionToken = obj._sessionToken;
+    this._appKey = obj._appKey;
+    this._className = obj._className;
+    this._appId = obj._appId;
+
     this._where = {};
     this._include = [];
     this._limit = -1; // negative limit means, do not send a limit
@@ -820,7 +825,11 @@ SuperType.Query.prototype = {
             return whereData;
 
         var params = {
-            where: whereData
+            where: whereData,
+            _sessionToken : this._sessionToken,
+            _appKey : this._appKey,
+            _className : this._className,
+            _appId : this._appId
         };
 
         if (this._include.length > 0) {
@@ -1582,6 +1591,11 @@ SuperType.Aggregate = function(obj){
     this.className = obj._className;
     this.masterKey = obj.masterKey;
 
+    this._sessionToken = obj._sessionToken;
+    this._appKey = obj._appKey;
+    this._className = obj._className;
+    this._appId = obj._appId;
+
     this._aggregate = [];
 };
 
@@ -1596,7 +1610,12 @@ SuperType.Aggregate.prototype = {
 
         var params = {
             aggregate: this._aggregate,
-            _masterKey : this.masterKey
+            _masterKey : this.masterKey,
+            _sessionToken : this._sessionToken,
+            _appKey : this._appKey,
+            _className : this._className,
+            _appId : this._appId
+
         };
 
         return JSON.stringify(params);
