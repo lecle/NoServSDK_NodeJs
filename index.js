@@ -35,6 +35,8 @@ module.exports.Noserv.sendAjax = function(method, url, data, callF, addF){
 
     request(options, function(err, res) {
 
+        module.exports.isRunning = false;
+
         if(err) {
             if (callF.error)
                 callF.error(data, err.message);
@@ -53,8 +55,6 @@ module.exports.Noserv.sendAjax = function(method, url, data, callF, addF){
             if(callF && callF.success)
                 callF.success(response);
         }
-
-        module.exports.isRunning = false;
 
         if(module.exports.reqQueue.length > 0) {
 
