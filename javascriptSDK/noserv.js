@@ -596,8 +596,8 @@ SuperType.User = function(sessionToken, appId, appKey ){
     }
 
     User.logIn = function(username, password, options) {
-        options = options || {};
 
+        var options = options || {};
         this.set("username", username);
         this.set("password", password);
 
@@ -902,6 +902,9 @@ SuperType.Query.prototype = {
         options = options || {};
 
         var params = JSON.parse(this.toJSON());
+        if( this._sessionToken ) {
+            params._sessionToken = this._sessionToken;
+        }
         params.limit = 0;
         params.count = 1;
         var request = SuperType._request({
